@@ -6,6 +6,7 @@
 const fs = require('fs');
 const path = require('path');
 const puppeteer = require('puppeteer');
+const puppeteerPkg = require('puppeteer/package.json');
 
 const CONFIG_PATH = path.join(process.cwd(), 'snapshot.config.json');
 let userConfig = {};
@@ -85,7 +86,7 @@ async function takeSnapshot(browser, friend) {
       timeout: 60000,
     });
     // Small extra wait for lazy content
-    await page.waitForTimeout(2000);
+    await new Promise((resolve) => setTimeout(resolve, 2000));
 
     await page.emulateMediaType('screen');
 
@@ -106,6 +107,8 @@ async function takeSnapshot(browser, friend) {
 }
 
 (async () => {
+  console.log(`Snapshot script build: 2025-08-21-01`);
+  console.log(`Using Puppeteer version: ${puppeteerPkg.version}`);
   ensureDirectoryExists(OUTPUT_DIR);
 
   let browser;
@@ -133,7 +136,13 @@ async function takeSnapshot(browser, friend) {
       } else {
         failCount += 1;
         console.warn(`Failed: ${friend.name} (${friend.url})`);
-        console.warn(String(result.error?.message || result.error));
+        if (result.error) {
+          const errMsg = String(result.error.message || result.error);
+          console.warn(errMsg);
+          if (result.error.stack) {
+            console.warn(result.error.stack);
+          }
+        }
       }
     }
 
