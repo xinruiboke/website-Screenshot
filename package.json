@@ -1,0 +1,17 @@
+{
+  "name": "friend-snapshot",
+  "version": "1.0.0",
+  "private": true,
+  "description": "Fetch friend links and generate full-page WebP snapshots via GitHub Actions",
+  "license": "MIT",
+  "scripts": {
+    "snapshot": "node scripts/snapshot.js"
+  },
+  "engines": {
+    "node": ">=18"
+  },
+  "dependencies": {
+    "puppeteer": "^23.7.0"
+  }
+}
+
