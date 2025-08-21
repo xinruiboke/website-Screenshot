@@ -30,6 +30,11 @@ jobs:
         run: |
           npm ci || npm i --no-audit --no-fund
 
+      - name: Install fonts for CJK rendering (Ubuntu)
+        run: |
+          sudo apt-get update -y
+          sudo apt-get install -y fonts-wqy-zenhei fonts-wqy-microhei fonts-noto-cjk
+
       - name: Generate snapshots
         run: npm run snapshot
         env:
@@ -38,6 +43,10 @@ jobs:
           # FRIENDS_URL: 'https://your-domain/api/links.json'
           # VIEWPORT_WIDTH: '1366'
           # VIEWPORT_HEIGHT: '768'
+          # CONCURRENCY: '4'
+          # DEVICE_SCALE: '1'
+          # BROWSER_LANG: 'zh-CN,zh;q=0.9,en;q=0.8'
+          # EXTRA_WAIT_MS: '5000'
 
       - name: Commit and push if changed
         run: |

@@ -3,6 +3,16 @@
   "viewport": {
     "width": 1920,
     "height": 1080
+  },
+  "concurrency": 10,
+  "deviceScaleFactor": 1,
+  "lang": "zh-CN,zh;q=0.9,en;q=0.8",
+  "extraWaitMs": 5000,
+  "scroll": {
+    "enabled": true,
+    "stepPx": 800,
+    "delayMs": 200,
+    "maxMs": 15000
   }
 }
 

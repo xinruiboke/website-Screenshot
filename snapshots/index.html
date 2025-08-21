@@ -1,0 +1,97 @@
+<!doctype html>
+<html lang="zh-CN">
+  <head>
+    <meta charset="utf-8" />
+    <meta name="viewport" content="width=device-width, initial-scale=1" />
+    <title>友情链接快照</title>
+    <style>
+      body { font-family: -apple-system, BlinkMacSystemFont, 'Segoe UI', Roboto, 'Helvetica Neue', Arial, 'Noto Sans', 'PingFang SC', 'Hiragino Sans GB', 'Microsoft YaHei', sans-serif; margin: 0; padding: 24px; background: #f7f7f8; color: #1f2328; }
+      header { display: flex; align-items: baseline; gap: 12px; margin-bottom: 16px; }
+      h1 { font-size: 20px; margin: 0; }
+      time { color: #6e7781; font-size: 12px; }
+      .grid { display: grid; grid-template-columns: repeat(auto-fill, minmax(280px, 1fr)); gap: 16px; }
+      .card { background: #fff; border: 1px solid #e5e7eb; border-radius: 8px; overflow: hidden; box-shadow: 0 1px 2px rgba(0,0,0,0.03); display: flex; flex-direction: column; }
+      .cover { width: 100%; aspect-ratio: 16/9; object-fit: cover; background: #f0f0f0; }
+      .content { padding: 12px; display: flex; justify-content: space-between; align-items: center; gap: 8px; }
+      .name { font-weight: 600; font-size: 14px; overflow: hidden; text-overflow: ellipsis; white-space: nowrap; }
+      .link { color: #2563eb; text-decoration: none; font-size: 12px; }
+      .link:hover { text-decoration: underline; }
+      footer { margin-top: 24px; color: #6e7781; font-size: 12px; }
+      .empty { color: #6e7781; padding: 24px 0; }
+    </style>
+  </head>
+  <body>
+    <header>
+      <h1>友情链接快照</h1>
+      <time id="generatedAt"></time>
+    </header>
+    <div id="grid" class="grid"></div>
+    <div id="empty" class="empty" style="display:none;">暂无数据</div>
+    <footer>
+      本页与 friends.json、图片均在当前目录。
+    </footer>
+
+    <script>
+      async function load() {
+        try {
+          const res = await fetch('friends.json?_=' + Date.now(), { cache: 'no-cache' });
+          if (!res.ok) throw new Error('HTTP ' + res.status);
+          const data = await res.json();
+
+          const grid = document.getElementById('grid');
+          const empty = document.getElementById('empty');
+          const ts = document.getElementById('generatedAt');
+          ts.textContent = data.generatedAt ? `更新于 ${new Date(data.generatedAt).toLocaleString()}` : '';
+
+          grid.innerHTML = '';
+          const items = Array.isArray(data.items) ? data.items : [];
+          if (items.length === 0) {
+            empty.style.display = 'block';
+            return;
+          }
+          empty.style.display = 'none';
+
+          for (const item of items) {
+            const card = document.createElement('div');
+            card.className = 'card';
+
+            const img = document.createElement('img');
+            img.className = 'cover';
+            img.loading = 'lazy';
+            img.decoding = 'async';
+            img.referrerPolicy = 'no-referrer';
+            img.src = item.image;
+            img.alt = item.name || '';
+
+            const content = document.createElement('div');
+            content.className = 'content';
+
+            const name = document.createElement('div');
+            name.className = 'name';
+            name.title = item.name || '';
+            name.textContent = item.name || '';
+
+            const a = document.createElement('a');
+            a.className = 'link';
+            a.href = item.url;
+            a.target = '_blank';
+            a.rel = 'noopener noreferrer';
+            a.textContent = '访问';
+
+            content.appendChild(name);
+            content.appendChild(a);
+            card.appendChild(img);
+            card.appendChild(content);
+            grid.appendChild(card);
+          }
+        } catch (e) {
+          console.error('Failed to load friends.json', e);
+          document.getElementById('empty').style.display = 'block';
+        }
+      }
+      load();
+    </script>
+  </body>
+  </html>
+
+
